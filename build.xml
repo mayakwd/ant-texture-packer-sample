@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Example: Creation and updating of the texture atlases .
+	Author: Ilya Malanin (flashdeveloper[at]pastila.org)
+-->
+<project name="sample-project" default="update-resources">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+
+	<property environment="env" />
+	<property file="./build.properties" />
+
+	<target name="update-resources">
+		<foreach target="-update-atlas" param="atlas.src.path">
+			<path>
+				<dirset dir="${assets.path}" includes="*" />
+			</path>
+		</foreach>
+	</target>
+
+	<target name="-update-atlas">
+		<basename property="atlas.name" file="${atlas.src.path}" />
+
+		<echo>Updating atlas for directiory: ${atlas.name}</echo>
+
+		<exec executable="${packer}">
+			<arg line="--data ${resources.path}/${atlas.name}.xml" />
+			<arg line="--sheet ${resources.path}/${atlas.name}.png" />
+			<arg line="--format sparrow" />
+			<arg line="--trim-sprite-names" />
+			<arg line="--algorithm MaxRects" />
+			<arg line="--maxrects-heuristics Best" />
+			<arg line="--shape-padding 1" />
+			<arg line="--border-padding 0" />
+			<arg line="--trim-mode Trim" />
+			<arg line="--png-opt-level 3" />
+			<arg line="--replace ^=${atlas.name}/"/>
+			<arg line="${atlas.src.path}" />
+		</exec>
+	</target>
+</project>
